@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>
+    Visualizing Health Inequities: The Role of Socioeconomic Factors in
+    Mychart Activation
+  </title>
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body>
+  <header>
+    <nav class="nav__bar">
+      <a
+      aria-label="Visualizing Health Inequities: The Role of Socioeconomic Factors in Mychart Activation"
+      class="nav__brand"
+      href="/"
+      ></a>
+      <p class="nav__title">Health Inequities:</p>
+      <p class="nav__subtitle">
+        The Role of Socioeconomic Factors in Mychart Activation
+      </p>
+      <div class="filter_area">
+        <div>
+          <label for="SVI">Select SVI Theme</label>
+          <select name="svi" id="svi" onchange="filter_data(this)">
+            <option value="Activation" selected>Total MyChart Activation</option>
+            <option value="SocioEconomic" selected>Socio-Economic</option>
+            <option value="HousingTransport">Housing Transport</option>
+            <option value="MinorityLanguage">Minority Language</option>
+            <option value="HouseholdComposition">Household Composition</option>
+          </select>
+        </div>
+        <div>
+          <label for="Filter">Add Filter</label>
+          <select name="filter" id="filter" onchange="filter_data(this)">
+            <option value="Activation" selected>Total MyChart Activation</option>
+            <option value="White_active">White Activation</option>
+            <option value="AfricanAmerican_active">African American Activation</option>
+            <option value="Asian_active">Asian Activation</option>
+            <option value="others_active">Others Activation</option>
+            <option value="NoRace_active">No Race Known - Activation</option>
+            <option value="ActivationNHL">Not Hispanic Latino Activation</option>
+            <option value="ActivationHL">Hispanic Latino Activation</option>
+            <option value="ActivationNoEthnicity">No Ethnicity - Activation</option>
+          </select>
+        </div>
+      </div>
+    </nav>
+  </header>
+  <section>
+    <div class="parent">
+      <div class="grid--1" id="map-layer">
+        <svg id="my_dataviz" width="470" height="420"></svg>
+        <div id="legend" width = "470" height="60"></div>
+        <div id="demo_pane" width = "470" height="200"></div>
+      </div>
+      <div class="grid--2">
+        <div class="filter_area_radar" width = "400" >
+          <div>
+            <label for="zipcode1">Zipcode 1: </label>
+            <select name="zipcode1" id="zipcode1" onchange="filter_zipcode_data(this)">
+              <option value="select" selected>Select</option>
+            </select>
+          </div>
+        </div>
+        
+        <div id="radar_plot_zipcode1" width = "400" height = "400"></div>
+        
+        <div class="filter_area_radar" width = "400">
+          <div>
+            <label for="zipcode2">Zipcode 2: </label>
+            <select name="zipcode2" id="zipcode2" onchange="filter_zipcode_data(this)">
+              <option value="select" selected>Select</option>
+            </select>
+          </div>
+        </div>
+        
+        <div id="radar_plot_zipcode2" width = "400" height = "400"></div>
+      </div>
+      <div class="grid--3">
+        <div id = "bubble_div">
+        <svg id="bubble_plot" height = "350" width = "500"></svg>
+      </div>
+      <div id = "violin_div" height = "400" width = "500">
+        <!-- <input type="checkbox" onchange="load_data_jitter(this)" /> Ethnicity -->
+        <svg id="violin_plot"></svg>
+      </div>
+      
+    </div>
+  </section>
+  <script src="https://d3js.org/d3.v6.js"></script>
+  <script src="./script/main.js"></script>
+  <script src="./script/radar.js"></script>
+  <script src="./script/jitter.js"></script>
+</body>
+</html>
