@@ -25,9 +25,6 @@ function draw_violin(dataset_race, dataset_ethnicity) {
     };
   }
 
-  const minVal = d3.min(data, (d) => d["value"]);
-  const maxVal = d3.max(data, (d) => d["value"]);
-  const meanVal = d3.mean(data, (d) => d["value"]);
   const jitterWidth = 30;
 
   let yScale = d3
@@ -85,7 +82,6 @@ function draw_violin(dataset_race, dataset_ethnicity) {
     .range([xScale.bandwidth() / 2, xScale.bandwidth()])
     .domain([0, maxNum]);
 
-  // Define the tooltip div
   var tooltip = d3
     .select("#violin_div")
     .append("div")
@@ -98,17 +94,15 @@ function draw_violin(dataset_race, dataset_ethnicity) {
     .style("position", "absolute")
     .style("padding", "5px");
 
-  // Define the mouseover function
   function mouseover(event, d) {
     tooltip.transition().duration(200).style("opacity", 0.9);
 
     tooltip
       .html("Zipcode: " + d.zipcode)
-      .style("left", event.pageX + "px") // add 10px to move the tooltip to the right of the mouse pointer
-      .style("top", event.pageY + "px"); // subtract 10px to move the tooltip above the mouse pointer
+      .style("left", event.pageX + "px")
+      .style("top", event.pageY + "px");
   }
 
-  // Define the mouseout function
   function mouseout(d) {
     tooltip.transition().duration(500).style("opacity", 0);
   }
@@ -457,7 +451,6 @@ function draw_violin_ethnicity(dataset_race, dataset_ethnicity) {
     .text("MyChart Activation (scale : 0 - 1)")
     .style("font-size", "10px");
 
-  // Define the tooltip div
   var tooltip = d3
     .select("#violin_div")
     .append("div")
@@ -470,17 +463,15 @@ function draw_violin_ethnicity(dataset_race, dataset_ethnicity) {
     .style("position", "absolute")
     .style("padding", "5px");
 
-  // Define the mouseover function
   function mouseover(event, d) {
     tooltip.transition().duration(200).style("opacity", 0.9);
 
     tooltip
       .html("Zipcode: " + d.zipcode)
-      .style("left", event.pageX + "px") // add 10px to move the tooltip to the right of the mouse pointer
-      .style("top", event.pageY + "px"); // subtract 10px to move the tooltip above the mouse pointer
+      .style("left", event.pageX + "px")
+      .style("top", event.pageY + "px");
   }
 
-  // Define the mouseout function
   function mouseout(d) {
     tooltip.transition().duration(500).style("opacity", 0);
   }

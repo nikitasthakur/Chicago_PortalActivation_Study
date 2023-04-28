@@ -1,3 +1,4 @@
+//spider plot
 var radar_margin = { top: 0, right: 0, bottom: 0, left: 0 },
   radar_width = 400,
   radar_height = 320;
@@ -24,6 +25,7 @@ function RadarChart(id, zipcode, dataset) {
     );
   }
 
+  //data mapping for the polygons to be plotted in the spider plot
   var data = [
     [
       {
@@ -94,19 +96,19 @@ function RadarChart(id, zipcode, dataset) {
   };
 
   var cfg = {
-    w: 400, //Width of the circle
-    h: 400, //Height of the circle
-    margin: { top: 0, right: 0, bottom: 0, left: 0 }, //The margins of the rdr_svg
-    levels: 6, //How many levels or inner circles should there be drawn
-    maxValue: 0, //What is the value that the biggest circle will represent
-    labelFactor: 1.5, //How much farther than the radius of the outer circle should the labels be placed
-    wrapWidth: 40, //The number of pixels after which a label needs to be given a new line
-    opacityArea: 0.5, //The opacity of the area of the blob
-    dotRadius: 4, //The size of the colored circles of each blog
-    opacityCircles: 0, //The opacity of the circles of each blob
-    strokeWidth: 2, //The width of the stroke around each blob
-    roundStrokes: false, //If true the area and stroke will follow a round path (cardinal-closed)
-    color: d3.scaleOrdinal(d3.schemeCategory10), //Color function
+    w: 400, 
+    h: 400,
+    margin: { top: 0, right: 0, bottom: 0, left: 0 },
+    levels: 6,
+    maxValue: 0,
+    labelFactor: 1.5,
+    wrapWidth: 40,
+    opacityArea: 0.5,
+    dotRadius: 4,
+    opacityCircles: 0,
+    strokeWidth: 2,
+    roundStrokes: false,
+    color: d3.scaleOrdinal(d3.schemeCategory10),
   };
 
   var scaleList = [
@@ -124,27 +126,16 @@ function RadarChart(id, zipcode, dataset) {
       if ("undefined" !== typeof options[i]) {
         cfg[i] = options[i];
       }
-    } //for i
-  } //if
+    } 
+  } 
 
-  //If the supplied maxValue is smaller than the actual one, replace by the max in the data
-  var maxValue = Math.max(
-    cfg.maxValue,
-    d3.max(data, function (i) {
-      return d3.max(
-        i.map(function (o) {
-          return o.value;
-        })
-      );
-    })
-  );
 
   var allAxis = data[0].map(function (i, j) {
       return i.axis;
-    }), //Names of each axis
-    total = allAxis.length, //The number of different axes
+    }),
+    total = allAxis.length,
     radius = Math.min(cfg.w / 3, cfg.h / 2.8), //Radius of the outermost circle
-    Format = d3.format(".1f"), //Percentage formatting
+    Format = d3.format(".1f"),
     angleSlice = (Math.PI * 2) / total; //The width in radians of each "slice"
 
   var g = rdr_svg
@@ -315,16 +306,13 @@ function RadarChart(id, zipcode, dataset) {
     })
     .style("fill-opacity", cfg.opacityArea)
     .on("mouseover", function (d, i) {
-      //Dim all blobs
       d3.selectAll(".radarArea")
         .transition()
         .duration(200)
         .style("fill-opacity", 0.1);
-      //Bring back the hovered over blob
       d3.select(this).transition().duration(200).style("fill-opacity", 0.7);
     })
     .on("mouseout", function () {
-      //Bring back all blobs
       d3.selectAll(".radarArea")
         .transition()
         .duration(200)
@@ -366,7 +354,6 @@ function RadarChart(id, zipcode, dataset) {
     })
     .style("fill-opacity", 0.8);
 
-  //Wrapper for the invisible circles on top
   var blobCircleWrapper = g
     .selectAll(".radarCircleWrapper")
     .data(data)
@@ -374,7 +361,6 @@ function RadarChart(id, zipcode, dataset) {
     .append("g")
     .attr("class", "radarCircleWrapper");
 
-  //Append a set of invisible circles on top for the mouseover pop-up
   blobCircleWrapper
     .selectAll(".radarInvisibleCircle")
     .data(function (d, i) {
@@ -408,14 +394,12 @@ function RadarChart(id, zipcode, dataset) {
       rdr_tooltip.transition().duration(200).style("opacity", 0);
     });
 
-  //Set up the small rdr_tooltip for when you hover over a circle
   var rdr_tooltip = g
     .append("text")
     .attr("class", "tooltip")
     .style("opacity", 0);
 
   //Taken from http://bl.ocks.org/mbostock/7555321
-  //Wraps rdr_svg text
   function wrap(text, width) {
     text.each(function () {
       var text = d3.select(this),
@@ -482,4 +466,4 @@ function RadarChart(id, zipcode, dataset) {
     .attr("text-anchor", "left")
     .style("alignment-baseline", "middle")
     .style("font-size", "12px");
-} //RadarChart
+}

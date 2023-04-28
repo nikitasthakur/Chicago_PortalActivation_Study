@@ -6,7 +6,7 @@ async function load_data() {
   draw_demopane(dataset, "60607");
   populteZips();
   zip1 = document.getElementById("");
-  RadarChart("#radar_plot_zipcode1", "60623", dataset); //Default
+  RadarChart("#radar_plot_zipcode1", "60623", dataset); //Default values
   RadarChart("#radar_plot_zipcode2", "60612", dataset);
   filter_zipcode_data("60623", "60612");
   draw_bubble(dataset, "SocioEconomic");
@@ -90,6 +90,7 @@ var zipcodes = [
   "60656",
 ];
 
+// filter functions for data + making visualization function calls
 function filter_data(element) {
   svitheme = document.getElementById("svi").value;
   filter = document.getElementById("filter").value;
@@ -112,6 +113,7 @@ function filter_zipcode_data(element) {
   RadarChart("#radar_plot_zipcode2", zipcode2_val, dataset);
 }
 
+// function for populating zip codes in the drop down menus, sorted for better user experience
 function populteZips() {
   zipcode1 = document.getElementById("zipcode1").value;
   zipcode2 = document.getElementById("zipcode2").value;
@@ -139,7 +141,7 @@ function populteZips() {
   document.getElementById("zipcode2").innerHTML = str2;
 }
 
-// The svg
+// Chicago choropleth map section
 const chicagoMap = d3.select("#map_div").select("svg"),
   width = +chicagoMap.attr("width"),
   height = +chicagoMap.attr("height");
@@ -200,20 +202,19 @@ function draw_map(dataset, theme, filter) {
     .translate([290, height / 2.5]);
 
   const path = d3.geoPath();
+  
   // Data and color scale
-
   const colorScale = d3
     .scaleLinear()
     .domain([0, 0.2, 0.4, 0.6, 0.8, 1])
     .range(["#93caf6", "#9fa0ff", "#9667e0", "#ab51e3", "#6f2dbd", "#4a0a77"]);
 
+    // for glyphs
   const z = d3
     .scaleSqrt()
-    // .domain([d3.min(data.values()), d3.max(data.values())])
     .domain([0, 20, 40, 60, 80, 100])
     .range([0, 2, 4, 6, 8]);
 
-  // Load external data and boot
   d3.json("././data/zipcodes.geojson").then(function (loadData) {
     let topo = loadData;
 
@@ -238,7 +239,7 @@ function draw_map(dataset, theme, filter) {
       map_tooltip.transition().style("opacity", 0.9);
       map_tooltip
         .html("Zipcode: " + d.properties.zip)
-        .style("left", event.x + 10 + "px") // add 10px to move the tooltip to the right of the mouse pointer
+        .style("left", event.x + 10 + "px") 
         .style("top", event.y + 10 + "px");
     };
 
@@ -453,16 +454,6 @@ function draw_demopane(data, zipcode) {
     .style("text-decoration", "underline")
     .text("Zipcode: " + zipcode);
 
-  var tooltip = d3
-    .select("#my_dataviz")
-    .append("div")
-    .style("opacity", 0)
-    .attr("class", "tooltip")
-    .style("background-color", "white")
-    .style("border", "solid")
-    .style("border-width", "1px")
-    .style("border-radius", "5px")
-    .style("padding", "10px");
 
   demo
     .append("g")
@@ -588,6 +579,8 @@ function draw_demopane(data, zipcode) {
     .text("Ethnicity")
     .style("font-size", "12px");
 
+// legends for demographics section, with absolute positions to efficiently utilize the limited space
+
   const legendData1 = [
     { label: "Less than 730 days", color: AccessColors("LessThan730") },
     {
@@ -688,7 +681,6 @@ const margin_bubble = { top: 35, right: 30, bottom: 35, left: 25 },
   width_bubble = 500 - margin_bubble.left - margin_bubble.right,
   height_bubble = 350 - margin_bubble.top - margin_bubble.bottom;
 
-// append the svg object to the body of the page
 const bubble = d3
   .select("#bubble_div")
   .select("svg")
@@ -698,10 +690,8 @@ const bubble = d3
   .attr("transform", `translate(${margin_bubble.left},${margin_bubble.top})`);
 
 function draw_bubble(dataset, svitheme) {
-  // set the dimensions and margin_bubbles of the graph
 
   bubble.selectAll("*").remove();
-  // Add X axis
   const x = d3.scaleLinear().domain([0, 1]).range([0, width_bubble]);
   bubble
     .append("g")
@@ -787,8 +777,8 @@ function draw_bubble(dataset, svitheme) {
           "<br>Population percentage:" +
           ( Math.round(d.Population_Percentage * 100) / 100)
       )
-      .style("left", event.x + "px") // add 10px to move the tooltip to the right of the mouse pointer
-      .style("top", event.y + "px"); // subtract 10px to move the tooltip above the mouse pointer
+      .style("left", event.x + "px") 
+      .style("top", event.y + "px");
   }
 
   // Define the mouseout function
@@ -796,28 +786,17 @@ function draw_bubble(dataset, svitheme) {
     tooltip_bbl.transition().duration(500).style("opacity", 0);
   }
 
-  // ---------------------------//
-  //       HIGHLIGHT GROUP      //
-  // ---------------------------//
-
-  // What to do when one group is hovered
+  // hover interaction functions
   const highlight = function (event, d) {
-    // reduce opacity of all groups
     d3.selectAll(".bubbles").style("opacity", 0.05);
-    // expect the one that is hovered
     d3.selectAll("." + d.class).style("opacity", 1);
   };
 
-  // And when it is not hovered anymore
   const noHighlight = function (event, d) {
     d3.selectAll(".bubbles").style("opacity", 1);
   };
 
-  // ---------------------------//
-  //       CIRCLES              //
-  // ---------------------------//
-
-  // Add dots
+// add bubbles
   bubble
     .append("g")
     .selectAll("dot")
@@ -842,15 +821,9 @@ function draw_bubble(dataset, svitheme) {
     .attr("cy", (d) => y(d.Total_active))
     .attr("r", (d) => z(d.Total_Population))
     .style("fill", (d) => myColor(d[svitheme]))
-    // -3- Trigger the functions for hover
     .on("mouseover", mouseover)
     .on("mouseout", mouseout);
 
-  // ---------------------------//
-  //       LEGEND              //
-  // ---------------------------//
-
-  // Add one dot in the legend for each name.
   const size = 10;
   const allgroups = [
     { value: 0, class: "first" },
@@ -865,20 +838,19 @@ function draw_bubble(dataset, svitheme) {
     .data(allgroups)
     .join("circle")
     .attr("cx", 390)
-    .attr("cy", (d, i) => 0 + i * (size + 5)) // 100 is where the first dot appears. 25 is the distance between dots
+    .attr("cy", (d, i) => 0 + i * (size + 5))
     .attr("r", 5)
     .style("fill", (d) => myColor(d.value))
     .on("mouseover", highlight)
     .on("mouseleave", noHighlight);
 
-  // Add labels beside legend dots
   bubble
     .selectAll("mylabels")
     .data(allgroups)
     .enter()
     .append("text")
     .attr("x", 390 + size * 0.8)
-    .attr("y", (d, i) => i * (size + 5)) // 100 is where the first dot appears. 25 is the distance between dots
+    .attr("y", (d, i) => i * (size + 5))
     .style("fill", (d) => myColor(d.value))
     .text((d) => d.value)
     .attr("text-anchor", "left")

@@ -53,8 +53,8 @@
     <div class="parent">
       <div class="grid--1" id="map-layer">
         <div id="map_div">
-        <svg id="my_dataviz" width="470" height="420"></svg>
-      </div>
+          <svg id="chicago_map" width="470" height="420"></svg>
+        </div>
         <div id="legend" width = "470" height="60"></div>
         <div id="demo_pane" width = "470" height="200"></div>
       </div>
@@ -83,18 +83,17 @@
       </div>
       <div class="grid--3">
         <div id = "bubble_div">
-        <svg id="bubble_plot" height = "350" width = "500"></svg>
+          <svg id="bubble_plot" height = "350" width = "500"></svg>
+        </div>
+        <div id = "violin_div" height = "400" width = "500">
+          <svg id="violin_plot"></svg>
+        </div>
+        
       </div>
-      <div id = "violin_div" height = "400" width = "500">
-        <!-- <input type="checkbox" onchange="load_data_jitter(this)" /> Ethnicity -->
-        <svg id="violin_plot"></svg>
-      </div>
-      
-    </div>
-  </section>
-  <script src="https://d3js.org/d3.v6.js"></script>
-  <script src="./script/main.js"></script>
-  <script src="./script/radar.js"></script>
-  <script src="./script/jitter.js"></script>
-</body>
-</html>
+    </section>
+    <script src="https://d3js.org/d3.v6.js"></script>
+    <script src="./script/main.js"></script>
+    <script src="./script/radar.js"></script>
+    <script src="./script/jitter.js"></script>
+  </body>
+  </html>
