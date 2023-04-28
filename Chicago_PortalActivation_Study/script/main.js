@@ -5,17 +5,18 @@ async function load_data() {
   draw_map(dataset, "SocioEconimic", "Activation");
   draw_demopane(dataset, "60607");
   populteZips();
-  zip1 = document.getElementById("")
+  zip1 = document.getElementById("");
   RadarChart("#radar_plot_zipcode1", "60623", dataset); //Default
   RadarChart("#radar_plot_zipcode2", "60612", dataset);
-  filter_zipcode_data("60623","60612")
+  filter_zipcode_data("60623", "60612");
   draw_bubble(dataset, "SocioEconomic");
 }
 
 async function load_data_jitter() {
   var dataset_jitter_race = await d3.csv("././data/Jitter_Data_Race.csv");
   var dataset_jitter_ethnicity = await d3.csv(
-    "././data/Jitter_Data_Ethnicity.csv");
+    "././data/Jitter_Data_Ethnicity.csv"
+  );
   draw_violin(dataset_jitter_race, dataset_jitter_ethnicity);
 }
 load_data_jitter();
@@ -117,7 +118,7 @@ function populteZips() {
 
   var str1 = "";
   var str2 = "";
-  zipcodes.sort()
+  zipcodes.sort();
   for (var z of zipcodes) {
     if (z == zipcode1) {
       str1 += "<option value=" + z + " selected>" + z + "</option>";
@@ -139,7 +140,7 @@ function populteZips() {
 }
 
 // The svg
-const chicagoMap = d3.select("#my_dataviz"),
+const chicagoMap = d3.select("#map_div").select("svg"),
   width = +chicagoMap.attr("width"),
   height = +chicagoMap.attr("height");
 
@@ -209,24 +210,46 @@ function draw_map(dataset, theme, filter) {
   const z = d3
     .scaleSqrt()
     // .domain([d3.min(data.values()), d3.max(data.values())])
-    .domain([0,20,40,60,80,100])
+    .domain([0, 20, 40, 60, 80, 100])
     .range([0, 2, 4, 6, 8]);
 
   // Load external data and boot
   d3.json("././data/zipcodes.geojson").then(function (loadData) {
     let topo = loadData;
 
-    let mouseOver = function (d) {
+    // Draw a tooltip for the map
+    var map_tooltip = d3
+      .select("#map_div")
+      .append("div")
+      .style("opacity", 0)
+      .attr("class", "tooltip")
+      .style("background-color", "white")
+      .style("border", "solid")
+      .style("border-width", "2px")
+      .style("border-radius", "5px")
+      .style("position", "absolute")
+      .style("z-index", "10")
+      .style("font-size", "12px")
+      .style("padding", "2px");
+
+    let mouseOver = function (event, d) {
       d3.selectAll(".zip").transition().style("opacity", 0.5);
-      d3.select(this).transition().style("opacity", 1).style("stroke", "black");
+      d3.select(this).transition().style("opacity", 1);
+      map_tooltip.transition().style("opacity", 0.9);
+      map_tooltip
+        .html("Zipcode: " + d.properties.zip)
+        .style("left", event.x + 10 + "px") // add 10px to move the tooltip to the right of the mouse pointer
+        .style("top", event.y + 10 + "px");
     };
 
     let mouseLeave = function (d) {
       d3.selectAll(".zip").transition().style("opacity", 1);
-      d3.select(this).transition().style("opacity", 1).style("stroke", "none");
+      map_tooltip.transition().duration(500).style("opacity", 0);
     };
 
     let onClick = function (d) {
+      d3.selectAll(".zip").transition().style("stroke", "none");
+      d3.select(this).transition().style("opacity", 1).style("stroke", "black");
       var zipCode = d.target.id;
       draw_demopane(dataset, zipCode);
     };
@@ -430,8 +453,8 @@ function draw_demopane(data, zipcode) {
     .style("text-decoration", "underline")
     .text("Zipcode: " + zipcode);
 
-
-  var tooltip = d3.select("#my_dataviz")
+  var tooltip = d3
+    .select("#my_dataviz")
     .append("div")
     .style("opacity", 0)
     .attr("class", "tooltip")
@@ -439,9 +462,7 @@ function draw_demopane(data, zipcode) {
     .style("border", "solid")
     .style("border-width", "1px")
     .style("border-radius", "5px")
-    .style("padding", "10px")
-
-    .style("padding", "10px")
+    .style("padding", "10px");
 
   demo
     .append("g")
@@ -455,7 +476,7 @@ function draw_demopane(data, zipcode) {
     .attr("y", y("Days Since Accessed"))
     .attr("x", (d) => x(d[0]))
     .attr("width", (d) => x(d[1]) - x(d[0]))
-    .attr("height", 35)
+    .attr("height", 35);
 
   demo
     .append("g")
@@ -536,7 +557,7 @@ function draw_demopane(data, zipcode) {
     .attr("dy", "0.32em")
     .attr("writing-mode", "horizontal-lr")
     .append("tspan")
-    .text("Activation Rate")
+    .text("Activation")
     .style("font-size", "12px");
 
   demo
@@ -721,6 +742,16 @@ function draw_bubble(dataset, svitheme) {
     .style("text-decoration", "underline")
     .text("MyChart Activation vs " + svitheme);
 
+  bubble
+    .append("text")
+    .attr("x", 270)
+    .attr("y", -10)
+    .attr("text-anchor", "middle")
+    .style("font-size", "10px")
+    .attr("fill", "black")
+    .style("text-decoration", "underline")
+    .text("(bubble size proportionate to zip code population)");
+
   // Add a scale for bubble size
   const z = d3.scaleSqrt().domain([60, 50000]).range([2, 30]);
 
@@ -736,9 +767,10 @@ function draw_bubble(dataset, svitheme) {
     .append("div")
     .style("opacity", 0)
     .attr("class", "tooltip")
+    .style("font-size", "10px")
     .style("background-color", "white")
     .style("border", "solid")
-    .style("border-width", "2px")
+    .style("border-width", "1px")
     .style("border-radius", "5px")
     .style("position", "absolute")
     .style("z-index", "10")
@@ -750,14 +782,10 @@ function draw_bubble(dataset, svitheme) {
 
     tooltip_bbl
       .html(
-        "Zipcode: " +
+        "zipcode: " +
           d.PostalCode +
-          "<br>MyChart Activation: " +
-          d.Total_active +
-          "<br>" +
-          svitheme +
-          ": " +
-          d[svitheme]
+          "<br>Population percentage:" +
+          ( Math.round(d.Population_Percentage * 100) / 100)
       )
       .style("left", event.x + "px") // add 10px to move the tooltip to the right of the mouse pointer
       .style("top", event.y + "px"); // subtract 10px to move the tooltip above the mouse pointer

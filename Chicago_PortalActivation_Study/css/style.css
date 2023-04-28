@@ -105,8 +105,7 @@ a {
   margin: 0 0 0 auto;
 }
 
-
-.filter_area{
+.filter_area {
   color: #ccc;
   font-size: 1.5rem;
   font-weight: 200;
@@ -114,7 +113,7 @@ a {
   margin: 0 0 0 auto;
 }
 
-.filter_area_radar{
+.filter_area_radar {
   color: black;
   font-size: 1.5rem;
   font-weight: 200;
@@ -163,7 +162,7 @@ a {
 .bubbles {
   stroke-width: 1px;
   stroke: black;
-  opacity: .8
+  opacity: 0.8;
 }
 .bubbles:hover {
   stroke: black;
@@ -184,8 +183,8 @@ a {
 .map {
   width: 100%;
   /*height: 100%;*/
-/*   background-color: white;*/
-  /*box-shadow:*/ 
+  /*   background-color: white;*/
+  /*box-shadow:*/
 }
 
 .map-layer {
